@@ -121,7 +121,7 @@ rm svelte.config.js
 echo "wsvelte: ---  --- ---"
 echo "wsvelte: Creating a new svelte.config.js"
 cat > svelte.config.js << EOF
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import preprocess from "svelte-preprocess";
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -153,6 +153,20 @@ echo "wsvelte: ---  --- ---"
 echo "wsvelte: Changing the line containing //go:embed all:frontend/dist to //go:embed all:frontend/build in main.go"
 sed -i 's/\/\/go:embed all:frontend\/dist/\/\/go:embed all:frontend\/build/' main.go
 
+# Define the file path
+file="wails.json"
+
+# Define the string to be added
+string='"wailsjsdir": "./frontend/src/lib",'
+
+# Use the grep command to check if the string already exists in the file
+if grep -q "$string" "$file"; then
+    echo "The string '$string' already exists in the file '$file'"
+else
+    # Add the string to the file
+    sed -i '/"frontend:dev:serverUrl": "auto",/a '"$string"'' "$file"
+    echo "The string '$string' has been added to the file '$file'"
+fi
 
 echo "wsvelte: ---  --- ---"
 echo "wsvelte: Done!"
